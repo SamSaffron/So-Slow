@@ -14,6 +14,9 @@ IF OBJECT_ID(N'[dbo].[Users]') is not null
 IF OBJECT_ID(N'[dbo].[Votes]') is not null
 	DROP TABLE [Votes]
 
+IF OBJECT_ID(N'[dbo].[VoteTypes]') is not null
+	DROP TABLE [VoteTypes]
+
 CREATE TABLE [dbo].[Badges] (
   [Id]            [int]   IDENTITY ( 1 , 1 )   NOT NULL
   ,[UserId]       [int]   NULL
@@ -84,4 +87,34 @@ CREATE TABLE [dbo].[Votes] (
 CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
 
 ON [PRIMARY]
+
+create table VoteTypes ( Id int primary key, Name varchar(40))
+
+insert VoteTypes 
+select 
+1, 'AcceptedByOriginator'
+union all select
+2, 'UpMod'
+union all select
+3, 'DownMod'
+union all select
+4, 'Offensive'
+union all select
+5, 'Favorite'
+union all select
+6, 'Close'
+union all select
+7, 'Reopen'
+union all select
+8, 'BountyStart'
+union all select
+9, 'BountyClose'
+union all select
+10, 'Deletion'
+union all select
+11, 'Undeletion'
+union all select
+12, 'Spam'
+union all select
+13, 'InformModerator'
 
