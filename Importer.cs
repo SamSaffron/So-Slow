@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Data.SqlClient;
@@ -55,7 +54,6 @@ namespace SoSlow {
 
         class DumpReader : IDataReader {
 
-            string filename;
             DataTable schema;
             DataColumn nameColumn;
 
