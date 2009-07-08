@@ -91,14 +91,40 @@ namespace SoSlow {
            
 
             ThreadPool.QueueUserWorkItem(_ => {
+
                 foreach (var importer in importers) {
                     baseProgressMessage = "Importing " + importer.TargetTable + " ";
                     importer.Import(); 
                 }
 
+
+                SetProgressMessage("Importing cc_wiki_field!");
+                ImportCCWiki(cnn); 
+
                 SetProgressMessage("Done !");
                 EnableImportButton(); 
             });
+
+        }
+
+        private void ImportCCWiki(SqlConnection cnn) {
+
+            using (var cmd = cnn.CreateCommand()) {
+                cmd.CommandText = LoadResource("SoSlow.AddCCWikiColumn.sql");
+                cmd.ExecuteNonQuery();
+            }
+
+            // this is done for performance
+            var sb = new StringBuilder();
+            sb.Append("UPDATE Posts SET IsWiki = 1 WHERE Id in (");
+            var list = LoadResource("SoSlow.community_wiki.list");
+            sb.Append(string.Join(",", list.Split('\n')));
+            sb.Append(")");
+
+            using (var cmd = cnn.CreateCommand()) {
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+            }
 
         }
 
