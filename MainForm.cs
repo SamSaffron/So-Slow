@@ -77,7 +77,7 @@ namespace SoSlow {
                 cmd.ExecuteNonQuery();
             }
 
-            string[] files = new string[] { "badges", "comments", "posts", "users", "votes" };
+            string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
 
             var importers = new List<Importer>();
 

@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Data.SqlClient;
 using System.Data;
+using System.Diagnostics;
 
 namespace SoSlow {
 
@@ -32,34 +33,47 @@ namespace SoSlow {
 
         public void Import() {
 
-            SqlBulkCopy copy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock, null);
+            SqlBulkCopy copy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock , null);
             copy.DestinationTableName = targetTable;
             
             copy.NotifyAfter = NotifyPerRows;
             copy.SqlRowsCopied += new SqlRowsCopiedEventHandler(copy_SqlRowsCopied);
             copy.BatchSize = NotifyPerRows;
-            
-            copy.WriteToServer(new DumpReader(filename, targetTable, connection));
-            
 
-            
+            // TODO: Extract this further up
+            var validator = targetTable == "Comments" ? CommentsValidator : (ColumnValidator)null;
+
+            var dumpReader = new DumpReader(filename, targetTable, connection, validator);
+            copy.WriteToServer(dumpReader);
+           
         }
+
+        string CommentsValidator(string name, string value) {
+            if (name == "UserId" && value == "") {
+                return "-1";
+            }
+            return value;
+        }  
 
         void copy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e) {
             var p = Progress;
             if (p != null) p(this, new ProgressEventArgs() { RowsImported = (int)e.RowsCopied });
         }
 
-  
+
+
+        delegate string ColumnValidator(string name, string value); 
 
         class DumpReader : IDataReader {
 
+            
+
             DataTable schema;
             DataColumn nameColumn;
-
+            ColumnValidator validator; 
             XmlTextReader reader;
 
-            public DumpReader(string filename, string target, SqlConnection connection) {
+            public DumpReader(string filename, string target, SqlConnection connection, ColumnValidator validator) {
                 using (var cmd = connection.CreateCommand()) {
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "select top 1 * from " + target;
@@ -71,6 +85,7 @@ namespace SoSlow {
                 nameColumn = schema.Columns[0];
 
                 this.reader = new XmlTextReader(filename);
+                this.validator = validator;
             }
 
             #region IDataReader Members
@@ -95,7 +110,9 @@ namespace SoSlow {
                 throw new NotImplementedException();
             }
 
+            int rowNumber;
             public bool Read() {
+                rowNumber++;
                 bool gotRow = false;
                 while (reader.Read()) {
                     if (reader.Name == "row") {
@@ -202,11 +219,16 @@ namespace SoSlow {
                 throw new NotImplementedException();
             }
 
-            
-
             public object GetValue(int i) {
-                string name = (string)schema.Rows[i][nameColumn];
-                return reader.GetAttribute(name);
+                string name = (string)schema.Rows[i][nameColumn];  
+                return ValidateOrDefault(name, reader.GetAttribute(name));
+            }
+
+            private string ValidateOrDefault(string name, string data) {
+                if (validator != null) {
+                    return validator(name, data); 
+                }
+                return data;
             }
 
             public int GetValues(object[] values) {
