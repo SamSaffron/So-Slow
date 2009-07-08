@@ -72,10 +72,7 @@ namespace SoSlow {
 
             SqlConnection cnn = new SqlConnection(connectionString.Text);
             cnn.Open();
-            using (var cmd = cnn.CreateCommand()) {
-                cmd.CommandText = LoadResource("SoSlow.RecreateDB.sql");
-                cmd.ExecuteNonQuery();
-            }
+            CreateDB(cnn);
 
             string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
 
@@ -83,7 +80,10 @@ namespace SoSlow {
 
             foreach (var file in files) {
                 Importer importer = new Importer(
-                    string.Format("c:\\temp\\{0}.xml",file), TitleCase(file), cnn);
+                    Path.Combine(location.Text, string.Format("{0}.xml",file)),
+                    TitleCase(file), 
+                    cnn
+                );
                 importer.Progress += new EventHandler<ProgressEventArgs>(importer_Progress);
                 importers.Add(importer);
             }
@@ -97,14 +97,40 @@ namespace SoSlow {
                     importer.Import(); 
                 }
 
-
                 SetProgressMessage("Importing cc_wiki_field!");
-                ImportCCWiki(cnn); 
+                ImportCCWiki(cnn);
+
+                SetProgressMessage("Creating Tag Refs!");
+                baseProgressMessage = "Impoting tag refs";
+                ImportTagRefs(cnn); 
 
                 SetProgressMessage("Done !");
                 EnableImportButton(); 
             });
 
+        }
+
+        private void ImportTagRefs(SqlConnection cnn) {
+           
+            SqlBulkCopy copy = new SqlBulkCopy(cnn, SqlBulkCopyOptions.TableLock, null);
+            copy.DestinationTableName = "PostTags";
+            copy.BatchSize = 5000;
+            copy.NotifyAfter = 5000;
+            copy.SqlRowsCopied += new SqlRowsCopiedEventHandler(copy_SqlRowsCopied);
+            using (var reader = new TagReader(connectionString.Text)) {
+                copy.WriteToServer(reader);
+            }
+        }
+
+        void copy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e) {
+            importer_Progress(this, new ProgressEventArgs() { RowsImported = (int)e.RowsCopied });
+        }
+
+        private void CreateDB(SqlConnection cnn) {
+            using (var cmd = cnn.CreateCommand()) {
+                cmd.CommandText = LoadResource("SoSlow.RecreateDB.sql");
+                cmd.ExecuteNonQuery();
+            }
         }
 
         private void ImportCCWiki(SqlConnection cnn) {

@@ -17,6 +17,15 @@ IF OBJECT_ID(N'[dbo].[Votes]') is not null
 IF OBJECT_ID(N'[dbo].[VoteTypes]') is not null
 	DROP TABLE [VoteTypes]
 
+IF OBJECT_ID(N'[dbo].[Tags]') is not null
+	DROP TABLE [Tags]
+
+
+IF OBJECT_ID(N'[dbo].[PostTags]') is not null
+	DROP TABLE [PostTags]
+
+
+
 CREATE TABLE [dbo].[Badges] (
   [Id]            [int]   IDENTITY ( 1 , 1 )   NOT NULL
   ,[UserId]       [int]   NULL
@@ -87,6 +96,22 @@ CREATE TABLE [dbo].[Votes] (
 CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
 
 ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[Tags] (
+[Id] [int] identity primary key NOT NULL
+,[TagName] varchar(255)  NULL
+)
+ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[PostTags] (
+	PostId int, 
+	TagId int
+)
+ON [PRIMARY]
+
+create unique clustered index PostTagsIndex on PostTags (PostId,TagId)
 
 create table VoteTypes ( Id int primary key, Name varchar(40))
 
