@@ -72,6 +72,7 @@ namespace SoSlow {
 
             SqlConnection cnn = new SqlConnection(connectionString.Text);
             cnn.Open();
+
             CreateDB(cnn);
 
             string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
@@ -88,8 +89,6 @@ namespace SoSlow {
                 importers.Add(importer);
             }
 
-           
-
             ThreadPool.QueueUserWorkItem(_ => {
 
                 foreach (var importer in importers) {
@@ -97,8 +96,6 @@ namespace SoSlow {
                     importer.Import(); 
                 }
 
-                SetProgressMessage("Importing cc_wiki_field!");
-                ImportCCWiki(cnn);
 
                 SetProgressMessage("Creating Tag Refs!");
                 baseProgressMessage = "Impoting tag refs";
@@ -133,26 +130,6 @@ namespace SoSlow {
             }
         }
 
-        private void ImportCCWiki(SqlConnection cnn) {
-
-            using (var cmd = cnn.CreateCommand()) {
-                cmd.CommandText = LoadResource("SoSlow.AddCCWikiColumn.sql");
-                cmd.ExecuteNonQuery();
-            }
-
-            // this is done for performance
-            var sb = new StringBuilder();
-            sb.Append("UPDATE Posts SET IsWiki = 1 WHERE Id in (");
-            var list = LoadResource("SoSlow.community_wiki.list");
-            sb.Append(string.Join(",", list.Split('\n')));
-            sb.Append(")");
-
-            using (var cmd = cnn.CreateCommand()) {
-                cmd.CommandText = sb.ToString();
-                cmd.ExecuteNonQuery();
-            }
-
-        }
 
         private string TitleCase(string name) {
             return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name);

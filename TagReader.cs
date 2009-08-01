@@ -31,7 +31,7 @@ namespace SoSlow {
             }
 
             using (var command = connection.CreateCommand()) {
-                command.CommandText = "select Id, Tags from Posts";
+                command.CommandText = "select Id, Tags from Posts where PostTypeId = 1";
                 unsplitReader = command.ExecuteReader();
             }
 

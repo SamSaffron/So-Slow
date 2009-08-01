@@ -35,11 +35,12 @@ CREATE TABLE [dbo].[Badges] (
 ON [PRIMARY]
 
 CREATE TABLE [dbo].[Comments] (
-  [Id]            [int]   NOT NULL
-  ,[PostId]       [int]   NULL
-  ,[Text]         [nvarchar](max)   NULL
-  ,[CreationDate] [datetime]   NULL
-  ,[UserId]       [int]   NULL,
+  [Id]            int   NOT NULL
+  ,[PostId]       int   NULL
+  ,[Score]		  int	null
+  ,[Text]         nvarchar(max)   NULL
+  ,[CreationDate] datetime   NULL
+  ,[UserId]       int   NULL,
   CONSTRAINT [PK_Comments] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
 ON [PRIMARY]
 
@@ -64,6 +65,7 @@ CREATE TABLE [dbo].[Posts](
 	[FavoriteCount] [int] NULL,
 	[ClosedDate] [datetime] NULL,
 	[ParentId] [int] NULL,
+	CommunityOwnedDate datetime null
 CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED 
 (
 [Id] ASC
