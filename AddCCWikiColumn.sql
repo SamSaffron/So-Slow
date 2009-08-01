@@ -1,1 +1,0 @@
-﻿alter table Posts add IsWiki bit not null default 0
