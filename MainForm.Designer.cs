@@ -35,7 +35,7 @@
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(360, 166);
+            this.import.Location = new System.Drawing.Point(360, 286);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(73, 35);
             this.import.TabIndex = 0;
@@ -45,9 +45,10 @@
             // 
             // connectionString
             // 
-            this.connectionString.Location = new System.Drawing.Point(153, 41);
+            this.connectionString.Location = new System.Drawing.Point(145, 41);
+            this.connectionString.Multiline = true;
             this.connectionString.Name = "connectionString";
-            this.connectionString.Size = new System.Drawing.Size(280, 20);
+            this.connectionString.Size = new System.Drawing.Size(288, 161);
             this.connectionString.TabIndex = 1;
             // 
             // label1
@@ -62,7 +63,7 @@
             // location
             // 
             this.location.AutoSize = true;
-            this.location.Location = new System.Drawing.Point(30, 99);
+            this.location.Location = new System.Drawing.Point(30, 251);
             this.location.Name = "location";
             this.location.Size = new System.Drawing.Size(165, 13);
             this.location.TabIndex = 3;
@@ -70,7 +71,7 @@
             // 
             // selectLocation
             // 
-            this.selectLocation.Location = new System.Drawing.Point(309, 91);
+            this.selectLocation.Location = new System.Drawing.Point(309, 235);
             this.selectLocation.Name = "selectLocation";
             this.selectLocation.Size = new System.Drawing.Size(124, 29);
             this.selectLocation.TabIndex = 4;
@@ -81,25 +82,25 @@
             // progressBar1
             // 
             this.progressBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.progressBar1.Location = new System.Drawing.Point(0, 231);
+            this.progressBar1.Location = new System.Drawing.Point(0, 393);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(453, 23);
+            this.progressBar1.Size = new System.Drawing.Size(463, 23);
             this.progressBar1.TabIndex = 5;
             // 
             // progressMessage
             // 
             this.progressMessage.AutoSize = true;
-            this.progressMessage.Location = new System.Drawing.Point(12, 215);
+            this.progressMessage.Location = new System.Drawing.Point(30, 297);
             this.progressMessage.Name = "progressMessage";
             this.progressMessage.Size = new System.Drawing.Size(93, 13);
             this.progressMessage.TabIndex = 6;
             this.progressMessage.Text = "Progress message";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(453, 254);
+            this.ClientSize = new System.Drawing.Size(463, 416);
             this.Controls.Add(this.progressMessage);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.selectLocation);
@@ -107,7 +108,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.connectionString);
             this.Controls.Add(this.import);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "So Slow ... Stack Overflow database importer";
             this.ResumeLayout(false);
             this.PerformLayout();
