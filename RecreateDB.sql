@@ -31,8 +31,8 @@ CREATE TABLE [dbo].[Badges] (
   ,[UserId]       [int]   NULL
   ,[Name]         [nvarchar](50)   NULL
   ,[CreationDate] [datetime]   NULL,
-  CONSTRAINT [PK_Badges] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
-ON [PRIMARY]
+  CONSTRAINT [PK_Badges] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
+)
 
 CREATE TABLE [dbo].[Comments] (
   [Id]            int   NOT NULL
@@ -41,9 +41,8 @@ CREATE TABLE [dbo].[Comments] (
   ,[Text]         nvarchar(max)   NULL
   ,[CreationDate] datetime   NULL
   ,[UserId]       int   NULL,
-  CONSTRAINT [PK_Comments] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
-ON [PRIMARY]
-
+  CONSTRAINT [PK_Comments] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
+)
                     
 CREATE TABLE [dbo].[Posts](
 	[Id] [int] NOT NULL,
@@ -66,16 +65,14 @@ CREATE TABLE [dbo].[Posts](
 	[ClosedDate] [datetime] NULL,
 	[ParentId] [int] NULL,
 	CommunityOwnedDate datetime null
-CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED 
-(
-[Id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED  ( [Id] ASC )
+)
 
 
 CREATE TABLE [dbo].[Users] (
   [Id]              [int]   NOT NULL
   ,[Reputation]     [int]   NULL
+  ,[EmailHash] [varchar](40) NULL
   ,[CreationDate]   [datetime]   NULL
   ,[DisplayName]    [nvarchar](40)   NULL
   ,[LastAccessDate] [datetime]   NULL
@@ -86,32 +83,27 @@ CREATE TABLE [dbo].[Users] (
   ,[Views]          [int]   NULL
   ,[UpVotes]        [int]   NULL
   ,[DownVotes]      [int]   NULL,
-  CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
-ON [PRIMARY]
-
+  CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ( [Id] ASC )
+ )
 
 CREATE TABLE [dbo].[Votes] (
 [Id] [int] NOT NULL
 ,[PostId]       [int]   NULL
 ,[VoteTypeId]   [int]   NULL
 ,[CreationDate] [datetime]   NULL,
-CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) WITH ( PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON ) ON [PRIMARY])
-
-ON [PRIMARY]
+CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
+)
 
 
 CREATE TABLE [dbo].[Tags] (
 [Id] [int] identity primary key NOT NULL
 ,[TagName] varchar(255)  NULL
 )
-ON [PRIMARY]
-
 
 CREATE TABLE [dbo].[PostTags] (
 	PostId int, 
 	TagId int
 )
-ON [PRIMARY]
 
 create unique clustered index PostTagsIndex on PostTags (PostId,TagId)
 

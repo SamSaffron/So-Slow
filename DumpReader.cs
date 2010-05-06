@@ -42,7 +42,7 @@ namespace SoSlow {
                     break;
                 }
             }
-            return gotRow;
+            return gotRow && rowNumber < 1000;
         }
 
         public override void Dispose() {

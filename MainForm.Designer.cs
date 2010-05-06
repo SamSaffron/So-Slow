@@ -31,11 +31,15 @@
             this.selectLocation = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progressMessage = new System.Windows.Forms.Label();
+            this.listView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(360, 286);
+            this.import.Location = new System.Drawing.Point(385, 500);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(73, 35);
             this.import.TabIndex = 0;
@@ -45,7 +49,7 @@
             // 
             // connectionString
             // 
-            this.connectionString.Location = new System.Drawing.Point(145, 41);
+            this.connectionString.Location = new System.Drawing.Point(170, 41);
             this.connectionString.Multiline = true;
             this.connectionString.Name = "connectionString";
             this.connectionString.Size = new System.Drawing.Size(288, 161);
@@ -63,7 +67,7 @@
             // location
             // 
             this.location.AutoSize = true;
-            this.location.Location = new System.Drawing.Point(30, 251);
+            this.location.Location = new System.Drawing.Point(46, 243);
             this.location.Name = "location";
             this.location.Size = new System.Drawing.Size(165, 13);
             this.location.TabIndex = 3;
@@ -71,7 +75,7 @@
             // 
             // selectLocation
             // 
-            this.selectLocation.Location = new System.Drawing.Point(309, 235);
+            this.selectLocation.Location = new System.Drawing.Point(334, 235);
             this.selectLocation.Name = "selectLocation";
             this.selectLocation.Size = new System.Drawing.Size(124, 29);
             this.selectLocation.TabIndex = 4;
@@ -82,25 +86,56 @@
             // progressBar1
             // 
             this.progressBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.progressBar1.Location = new System.Drawing.Point(0, 393);
+            this.progressBar1.Location = new System.Drawing.Point(0, 568);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(463, 23);
+            this.progressBar1.Size = new System.Drawing.Size(488, 23);
             this.progressBar1.TabIndex = 5;
             // 
             // progressMessage
             // 
             this.progressMessage.AutoSize = true;
-            this.progressMessage.Location = new System.Drawing.Point(30, 297);
+            this.progressMessage.Location = new System.Drawing.Point(12, 522);
             this.progressMessage.Name = "progressMessage";
             this.progressMessage.Size = new System.Drawing.Size(93, 13);
             this.progressMessage.TabIndex = 6;
             this.progressMessage.Text = "Progress message";
             // 
+            // listView
+            // 
+            this.listView.CheckBoxes = true;
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listView.GridLines = true;
+            this.listView.Location = new System.Drawing.Point(33, 301);
+            this.listView.Name = "listView";
+            this.listView.Size = new System.Drawing.Size(425, 161);
+            this.listView.TabIndex = 7;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Source";
+            this.columnHeader1.Width = 98;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Size";
+            this.columnHeader2.Width = 63;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Destination";
+            this.columnHeader3.Width = 184;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(463, 416);
+            this.ClientSize = new System.Drawing.Size(488, 591);
+            this.Controls.Add(this.listView);
             this.Controls.Add(this.progressMessage);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.selectLocation);
@@ -125,6 +160,10 @@
         private System.Windows.Forms.Button selectLocation;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label progressMessage;
+        private System.Windows.Forms.ListView listView;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
 
