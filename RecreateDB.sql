@@ -30,7 +30,7 @@ CREATE TABLE [dbo].[Badges] (
   [Id]            [int]   IDENTITY ( 1 , 1 )   NOT NULL
   ,[UserId]       [int]   NULL
   ,[Name]         [nvarchar](50)   NULL
-  ,[CreationDate] [datetime]   NULL,
+  ,[Date] [datetime]   NULL,
   CONSTRAINT [PK_Badges] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
 )
 
@@ -68,6 +68,12 @@ CREATE TABLE [dbo].[Posts](
 CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED  ( [Id] ASC )
 )
 
+create index ParentIdIdx on Posts (ParentId)
+
+CREATE NONCLUSTERED INDEX idxPostOwner
+ON [dbo].[Posts] ([OwnerUserId],[CommunityOwnedDate])
+INCLUDE ([Id],[ParentId])
+
 
 CREATE TABLE [dbo].[Users] (
   [Id]              [int]   NOT NULL
@@ -86,6 +92,8 @@ CREATE TABLE [dbo].[Users] (
   CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ( [Id] ASC )
  )
 
+ create index [EmailHashIdx] on Users(EmailHash)
+
 CREATE TABLE [dbo].[Votes] (
 [Id] [int] NOT NULL
 ,[PostId]       [int]   NULL
@@ -93,6 +101,10 @@ CREATE TABLE [dbo].[Votes] (
 ,[CreationDate] [datetime]   NULL,
 CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
 )
+
+CREATE NONCLUSTERED INDEX idxVote
+ON [dbo].[Votes] ([VoteTypeId], [PostId], [CreationDate])
+
 
 
 CREATE TABLE [dbo].[Tags] (

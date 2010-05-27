@@ -163,7 +163,9 @@ namespace SoSlow {
 
                     var path = Path.Combine(location.Text, item.Text);
 
-                    dbs.Add(new DBInfo(new SqlConnection(str), path, str)); 
+                    var info = new DBInfo(new SqlConnection(str), path, str);
+                    
+                    dbs.Add(info); 
                 }
             }
 

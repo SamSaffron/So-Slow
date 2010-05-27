@@ -13,7 +13,7 @@ namespace SoSlow {
     }
 
     class Importer {
-
+        const int TIMEOUT = 5 * 60;
         string filename;
         string targetTable;
         SqlConnection connection;
@@ -34,6 +34,7 @@ namespace SoSlow {
         public void Import() {
 
             SqlBulkCopy copy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock , null);
+            copy.BulkCopyTimeout = TIMEOUT;
             copy.DestinationTableName = targetTable;
             
             copy.NotifyAfter = NotifyPerRows;
