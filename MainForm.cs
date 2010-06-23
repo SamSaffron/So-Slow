@@ -208,6 +208,11 @@ namespace SoSlow {
                     ImportTagRefs(db.Connection, db.ConnectionString);
                 }
 
+                SetProgressMessage("Running Post Scripts!");
+                foreach (var db in dbs) {
+                    RunPostScript(db.Connection);
+                }
+
                 SetProgressMessage("Done !");
                 EnableImportButton();
             });
@@ -229,6 +234,13 @@ namespace SoSlow {
 
         void copy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e) {
             importer_Progress(this, new ProgressEventArgs() { RowsImported = (int)e.RowsCopied });
+        }
+
+        private void RunPostScript(SqlConnection cnn) {
+            using (var cmd = cnn.CreateCommand()) {
+                cmd.CommandText = LoadResource("SoSlow.PostScript.sql");
+                cmd.ExecuteNonQuery();
+            }
         }
 
         private void CreateDB(SqlConnection cnn) {

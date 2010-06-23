@@ -53,7 +53,6 @@ CREATE TABLE [dbo].[Posts](
 	[ViewCount] [int] NULL,
 	[Body] [nvarchar](max) NULL,
 	[OwnerUserId] [int] NULL,
-	[OwnerDisplayName] [nvarchar](40) NULL,
 	[LastEditorUserId] [int] NULL,
 	[LastEditDate] [datetime] NULL,
 	[LastActivityDate] [datetime] NULL,
@@ -98,8 +97,10 @@ CREATE TABLE [dbo].[Votes] (
 [Id] [int] NOT NULL
 ,[PostId]       [int]   NULL
 ,[VoteTypeId]   [int]   NULL
-,[CreationDate] [datetime]   NULL,
-CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
+,[CreationDate] [datetime]   NULL
+,[BountyAmount] [int] NULL
+,[UserId] int null -- only for favorites 
+,CONSTRAINT [PK_Votes] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
 )
 
 CREATE NONCLUSTERED INDEX idxVote
@@ -118,6 +119,7 @@ CREATE TABLE [dbo].[PostTags] (
 )
 
 create unique clustered index PostTagsIndex on PostTags (PostId,TagId)
+create unique index PostTagsTagPostIndex on PostTags (TagId, PostId)
 
 create table VoteTypes ( Id int primary key, Name varchar(40))
 
