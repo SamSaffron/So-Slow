@@ -14,6 +14,9 @@ using System.IO;
 using System.Globalization;
 
 namespace SoSlow {
+
+   
+
     public partial class MainForm : Form {
 
         Settings settings;
@@ -171,60 +174,110 @@ namespace SoSlow {
 
             var importers = new List<Importer>();
 
-            foreach (var db in dbs) {
-                
-                db.Connection.Open();
-                CreateDB(db.Connection);
+            if (!cbRebuildPostTagsOnly.Checked)
+            {
+                foreach (var db in dbs)
+                {
 
-                string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
+                    db.Connection.Open();
+                    CreateDB(db.Connection);
 
-                
+                    string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
 
-                foreach (var file in files) {
-                    Importer importer = new Importer(
-                        Path.Combine(db.SourceFolder, string.Format("{0}.xml", file)),
-                        TitleCase(file),
-                        db.Connection
-                    );
-                    importer.Progress += new EventHandler<ProgressEventArgs>(importer_Progress);
-                    importers.Add(importer);
-                }  
+
+
+                    foreach (var file in files)
+                    {
+                        Importer importer = new Importer(
+                            Path.Combine(db.SourceFolder, string.Format("{0}.xml", file)),
+                            TitleCase(file),
+                            db.Connection
+                        );
+                        importer.Progress += new EventHandler<ProgressEventArgs>(importer_Progress);
+                        importers.Add(importer);
+                    }
+                }
             }
-  
-            
-
             ThreadPool.QueueUserWorkItem(_ =>
             {
+                try
+                {
+                    foreach (var importer in importers)
+                    {
+                        var cmd = importer.Connection.CreateCommand();
+                        cmd.CommandText = "TRUNCATE TABLE " + importer.TargetTable;
+                        cmd.ExecuteNonQuery();
 
-                foreach (var importer in importers) {
-                    baseProgressMessage = "Importing " + importer.TargetTable + " ";
-                    importer.Import();
+                        int retries = 3;
+                       
+                        while (retries-- > 0)
+                        {
+                            try
+                            {
+                                baseProgressMessage = "Importing " + importer.TargetTable;
+                                importer.Import();
+                                break;
+                            }
+                            catch
+                            {
+                                Extensions.Recover(importer.Connection);
+                                baseProgressMessage = "Retrying import " + importer.TargetTable + " ";
+                            }
+                        }
+                    }
+
+
+                    SetProgressMessage("Creating PostTags!");
+                    baseProgressMessage = "Impoting PostTags";
+                    foreach (var db in dbs)
+                    {
+                        
+                        int retries = 3;
+
+                        while (retries > 0)
+                        {
+                            retries -=1;
+
+                            try
+                            {
+                                baseProgressMessage = "Retrying import PostTags ";
+                                var cmd = db.Connection.CreateCommand();
+                                cmd.CommandText = "TRUNCATE TABLE PostTags";
+                                cmd.ExecuteNonQuery();
+
+                                ImportPostTags(db.Connection, db.ConnectionString);
+                                break;
+                            }
+                            catch
+                            {
+                                if (retries == 0) throw;
+                                Extensions.Recover(db.Connection);
+                            }
+                        }
+                    }
+
+                    SetProgressMessage("Running Post Scripts!");
+                    foreach (var db in dbs)
+                    {
+                        RunPostScript(db.Connection);
+                    }
+
+                    SetProgressMessage("Done !");
+                    EnableImportButton();
+                } catch(Exception ex)
+                {
+                    this.Invoke((MethodInvoker)(() => MessageBox.Show(this, "Failed: " + ex.Message + ex.StackTrace)));
                 }
-
-
-                SetProgressMessage("Creating Tag Refs!");
-                baseProgressMessage = "Impoting tag refs";
-                foreach (var db in dbs) {
-                    ImportTagRefs(db.Connection, db.ConnectionString);
-                }
-
-                SetProgressMessage("Running Post Scripts!");
-                foreach (var db in dbs) {
-                    RunPostScript(db.Connection);
-                }
-
-                SetProgressMessage("Done !");
-                EnableImportButton();
             });
 
         }
 
-        private void ImportTagRefs(SqlConnection cnn, string connectionString) {
+        private void ImportPostTags(SqlConnection cnn, string connectionString) {
 
             SqlBulkCopy copy = new SqlBulkCopy(cnn, SqlBulkCopyOptions.TableLock, null);
             copy.DestinationTableName = "PostTags";
-            copy.BatchSize = 5000;
-            copy.NotifyAfter = 5000;
+            copy.BatchSize = 1000;
+            copy.NotifyAfter = 1000;
             copy.SqlRowsCopied += new SqlRowsCopiedEventHandler(copy_SqlRowsCopied);
             // connection objects strip out the password so cnn.ConnectionString does not work
             using (var reader = new TagReader(connectionString)) {
@@ -277,5 +330,22 @@ namespace SoSlow {
 
 
 
+    }
+
+
+    public static class Extensions
+    {
+        public static void Recover(SqlConnection connection)
+        {
+            try
+            {
+                connection.Close();
+            }
+            catch (Exception)
+            {
+            }
+
+            connection.Open();
+        }
     }
 }

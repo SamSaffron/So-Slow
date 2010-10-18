@@ -31,7 +31,7 @@ namespace SoSlow {
             }
 
             using (var command = connection.CreateCommand()) {
-                command.CommandText = "select Id, Tags from Posts where PostTypeId = 1";
+                command.CommandText = "select Id, Tags from Posts where PostTypeId = 1 and Tags is not null";
                 unsplitReader = command.ExecuteReader();
             }
 
@@ -76,14 +76,14 @@ namespace SoSlow {
                 if (done) break;
                 currentTags.AddRange(unsplitReader.GetString(1).Replace("<", "").Split('>'));
                 
-                // I should really just use LINQ - I'm trying to ensure this build on .Net 2.0 
+                // I should really just use LINQ - I'm trying to ensure this builds on .Net 2.0 
                 for (int i = currentTags.Count - 1; i >= 0; i--) {
                     if (currentTags[i].Trim().Length == 0) {
                         currentTags.RemoveAt(i);
                     }
                 }
 
-                // really ... LINQ would to wonder 
+                // really ... LINQ would to wonders
                 var dict = new Dictionary<string, object>();
                 foreach (var item in currentTags) {
                     dict[item] = currentTags;

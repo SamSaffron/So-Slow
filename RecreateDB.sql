@@ -20,11 +20,8 @@ IF OBJECT_ID(N'[dbo].[VoteTypes]') is not null
 IF OBJECT_ID(N'[dbo].[Tags]') is not null
 	DROP TABLE [Tags]
 
-
 IF OBJECT_ID(N'[dbo].[PostTags]') is not null
 	DROP TABLE [PostTags]
-
-
 
 CREATE TABLE [dbo].[Badges] (
   [Id]            [int]   IDENTITY ( 1 , 1 )   NOT NULL

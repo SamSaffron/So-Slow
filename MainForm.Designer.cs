@@ -35,11 +35,12 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cbRebuildPostTagsOnly = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(385, 500);
+            this.import.Location = new System.Drawing.Point(366, 511);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(73, 35);
             this.import.TabIndex = 0;
@@ -94,7 +95,7 @@
             // progressMessage
             // 
             this.progressMessage.AutoSize = true;
-            this.progressMessage.Location = new System.Drawing.Point(12, 522);
+            this.progressMessage.Location = new System.Drawing.Point(30, 533);
             this.progressMessage.Name = "progressMessage";
             this.progressMessage.Size = new System.Drawing.Size(93, 13);
             this.progressMessage.TabIndex = 6;
@@ -130,11 +131,22 @@
             this.columnHeader3.Text = "Destination";
             this.columnHeader3.Width = 184;
             // 
+            // cbRebuildPostTagsOnly
+            // 
+            this.cbRebuildPostTagsOnly.AutoSize = true;
+            this.cbRebuildPostTagsOnly.Location = new System.Drawing.Point(33, 489);
+            this.cbRebuildPostTagsOnly.Name = "cbRebuildPostTagsOnly";
+            this.cbRebuildPostTagsOnly.Size = new System.Drawing.Size(127, 17);
+            this.cbRebuildPostTagsOnly.TabIndex = 8;
+            this.cbRebuildPostTagsOnly.Text = "Only rebuild post tags";
+            this.cbRebuildPostTagsOnly.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(488, 591);
+            this.Controls.Add(this.cbRebuildPostTagsOnly);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.progressMessage);
             this.Controls.Add(this.progressBar1);
@@ -164,6 +176,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.CheckBox cbRebuildPostTagsOnly;
     }
 }
 

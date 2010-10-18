@@ -25,6 +25,10 @@ namespace SoSlow {
             NotifyPerRows = 500; 
         }
 
+        public SqlConnection Connection {
+            get { return connection; }
+        }
+
         public string TargetTable { get { return targetTable; } }
 
         public int NotifyPerRows { get; set; }
