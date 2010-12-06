@@ -182,7 +182,7 @@ namespace SoSlow {
                     db.Connection.Open();
                     CreateDB(db.Connection);
 
-                    string[] files = new string[] { "comments", "badges", "posts", "users", "votes" };
+                    string[] files = new string[] { "comments", "badges", "posts", "users", "votes", "posthistory" };
 
 
 
@@ -214,14 +214,15 @@ namespace SoSlow {
                         {
                             try
                             {
-                                baseProgressMessage = "Importing " + importer.TargetTable;
+                                baseProgressMessage = "Importing " + importer.TargetTable + " ";
                                 importer.Import();
                                 break;
                             }
-                            catch
+                            catch(Exception ex)
                             {
+                                
                                 Extensions.Recover(importer.Connection);
-                                baseProgressMessage = "Retrying import " + importer.TargetTable + " ";
+                                baseProgressMessage = "Retrying import " + importer.TargetTable + " " + ex.Message;
                             }
                         }
                     }

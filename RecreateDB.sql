@@ -23,6 +23,9 @@ IF OBJECT_ID(N'[dbo].[Tags]') is not null
 IF OBJECT_ID(N'[dbo].[PostTags]') is not null
 	DROP TABLE [PostTags]
 
+IF OBJECT_ID(N'[dbo].[PostHistory]') is not null
+	DROP TABLE [PostHistory]
+
 CREATE TABLE [dbo].[Badges] (
   [Id]            [int]   IDENTITY ( 1 , 1 )   NOT NULL
   ,[UserId]       [int]   NULL
@@ -114,6 +117,17 @@ CREATE TABLE [dbo].[PostTags] (
 	PostId int, 
 	TagId int
 )
+
+CREATE TABLE [dbo].[PostHistory] (
+	Id int not null primary key,
+	PostHistoryTypeId int not null, 
+	PostId int not null,
+	RevisionGUID nvarchar(max), 
+	CreationDate datetime, 
+	UserId int,
+	[Text] nvarchar(max)
+)
+
 
 create unique clustered index PostTagsIndex on PostTags (PostId,TagId)
 create unique index PostTagsTagPostIndex on PostTags (TagId, PostId)
