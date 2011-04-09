@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoSlow", "SoSlow.csproj", "{C2FC3DA5-5C8E-4DEA-BF69-CAEB36350574}"
 EndProject
 Global

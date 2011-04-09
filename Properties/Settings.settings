@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Data Source=.;Initial Catalog=StackExchange_Database;Integrated Security=SSPI;</Value>
     </Setting>
     <Setting Name="DataLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
