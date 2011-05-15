@@ -41,7 +41,17 @@ namespace SoSlow {
             copy.BatchSize = NotifyPerRows;
 
             // TODO: Extract this further up
-            var validator = targetTable == "Comments" ? CommentsValidator : (ColumnValidator)null;
+            var validator = (ColumnValidator)null;
+
+            if (targetTable.ToLower() == "comments")
+            {
+                validator = CommentsValidator;
+            }
+            if (targetTable.ToLower() == "posts")
+            {
+                validator = ViewCountValidator;
+            }
+            //targetTable == "Comments" ? CommentsValidator : (ColumnValidator)null;
 
             var dumpReader = new DumpReader(filename, targetTable, connection, validator);
             copy.WriteToServer(dumpReader);
@@ -51,6 +61,15 @@ namespace SoSlow {
         string CommentsValidator(string name, string value) {
             if (name == "UserId" && value == "") {
                 return "-1";
+            }
+            return value;
+        }
+
+        string ViewCountValidator(string name, string value)
+        {
+            if (name == "ViewCount" && value == "")
+            {
+                return "0";
             }
             return value;
         }  

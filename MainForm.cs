@@ -17,6 +17,8 @@ namespace SoSlow {
     public partial class MainForm : Form {
 
         Settings settings;
+        StringBuilder importLog = new StringBuilder();
+        string logFilePath = Path.Combine(Environment.CurrentDirectory,"import.log");
 
         public MainForm() {
             InitializeComponent();
@@ -26,20 +28,20 @@ namespace SoSlow {
             SetProgressMessage("");
             progressBar1.Visible = false;
 
-            location.Text = settings.DataLocation;
+            locationEdit.Text = settings.DataLocation;
             connectionString.Text = settings.ConnectionString;
         }
 
         private void selectLocation_Click(object sender, EventArgs e) {
             var result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.OK) {
-                location.Text = folderBrowserDialog1.SelectedPath;
+                locationEdit.Text = folderBrowserDialog1.SelectedPath;
             } 
         }
 
         protected override void OnClosing(CancelEventArgs e) {
             if (settings != null) {
-                settings.DataLocation = location.Text;
+                settings.DataLocation = locationEdit.Text;
                 settings.ConnectionString = connectionString.Text;
                 settings.Save();
             }
@@ -51,23 +53,29 @@ namespace SoSlow {
                 Invoke((MethodInvoker)(() => SetProgressMessage(message)));
             } else {
                 progressMessage.Text = message;
+                string line = string.Format("[{0}] ",DateTime.Now.ToLongTimeString()) + progressMessage.Text;
+                importLog.AppendLine(line);
+                File.AppendAllText(logFilePath,line+Environment.NewLine);
             }
         }
 
-        string baseProgressMessage = "";
+        string baseProgressMessage = string.Empty;
 
         void SetProgress(int count) {
             if (InvokeRequired) {
                 Invoke((MethodInvoker)(() => SetProgress(count)));
             } else {
                 progressMessage.Text = baseProgressMessage + string.Format("{0} rows imported", count);
+                string line = string.Format("[{0}] ", DateTime.Now.ToLongTimeString()) + progressMessage.Text;
+                importLog.AppendLine(line);
+                File.AppendAllText(logFilePath, line + Environment.NewLine);
             }
         } 
 
         private void import_Click(object sender, EventArgs e) {
 
             import.Enabled = false;
-
+            File.Delete(logFilePath);
             // reset db and open connection
 
             SqlConnection cnn = new SqlConnection(connectionString.Text);
@@ -81,7 +89,7 @@ namespace SoSlow {
 
             foreach (var file in files) {
                 Importer importer = new Importer(
-                    Path.Combine(location.Text, string.Format("{0}.xml",file)),
+                    Path.Combine(locationEdit.Text, string.Format("{0}.xml",file)),
                     TitleCase(file), 
                     cnn
                 );
@@ -90,6 +98,7 @@ namespace SoSlow {
             }
 
             ThreadPool.QueueUserWorkItem(_ => {
+                DateTime startTime = DateTime.Now;
 
                 foreach (var importer in importers) {
                     baseProgressMessage = "Importing " + importer.TargetTable + " ";
@@ -101,8 +110,10 @@ namespace SoSlow {
                 baseProgressMessage = "Impoting tag refs";
                 ImportTagRefs(cnn); 
 
-                SetProgressMessage("Done !");
+                TimeSpan duration = DateTime.Now - startTime;
+                SetProgressMessage(string.Format("Import Done (duration : {0} min)",duration.TotalMinutes));
                 EnableImportButton(); 
+                ShowViewReporttButton();
             });
 
         }
@@ -142,7 +153,17 @@ namespace SoSlow {
                 import.Enabled = true;
             }
         }
-
+        private void ShowViewReporttButton()
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)( () => ShowViewReporttButton() ));
+            }
+            else
+            {
+                btnViewReport.Visible = true;
+            }
+        }
         private string LoadResource(string resource) {
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) {
@@ -153,6 +174,13 @@ namespace SoSlow {
 
         void importer_Progress(object sender, ProgressEventArgs e) {
             SetProgress(e.RowsImported);
+        }
+
+        private void btnViewReport_Click(object sender, EventArgs e)
+        {
+            ReportLog log = new ReportLog();
+            log.UpdateContent(importLog.ToString());
+            log.ShowDialog();
         } 
 
 
